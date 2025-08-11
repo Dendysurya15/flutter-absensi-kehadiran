@@ -1,5 +1,5 @@
-import 'package:absensi_kehadiran/app/controllers/auth_controller.dart';
-import 'package:absensi_kehadiran/app/routes/app_pages.dart';
+import 'package:firebase_auth_get_x/app/controllers/auth_controller.dart';
+import 'package:firebase_auth_get_x/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';

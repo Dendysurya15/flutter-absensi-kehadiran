@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.no_company.absensi_kehadiran"
+    namespace = "com.templateFirebaseAuthGetX.firebase_auth_get_x"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -22,7 +22,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.no_company.absensi_kehadiran"
+        applicationId = "com.templateFirebaseAuthGetX.firebase_auth_get_x"
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
