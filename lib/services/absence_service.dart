@@ -37,17 +37,20 @@ class AbsenceService {
     }
   }
 
-  // Save absence with local image path - Used by AbsenceController
+  // Save absence with local image path and location data
   Future<String?> saveAbsence({
     required File selfieImage,
     required String status,
     String? notes,
+    double? latitude,
+    double? longitude,
+    String? locationAddress,
   }) async {
     try {
       final user = _auth.currentUser;
       if (user == null) throw Exception('User not authenticated');
 
-      print('Starting absence save for user: ${user.uid}');
+      print('Starting absence save for user: ${user.email}');
 
       // Check if image file exists
       if (!await selfieImage.exists()) {
@@ -61,15 +64,18 @@ class AbsenceService {
       // Save image locally and get full path
       final String localImagePath = await _saveImageLocally(selfieImage, docId);
 
-      // Create absence model with local image path
+      // Create absence model with location data
       final absence = AbsenceModel(
         id: docId,
         userId: user.uid,
-        userEmail: user.email ?? 'Unknown', // Store email in userEmail field
+        userEmail: user.email ?? 'Unknown',
         timestamp: DateTime.now(),
-        selfieUrl: localImagePath, // Store full local path
+        selfieUrl: localImagePath,
         status: status,
         notes: notes,
+        latitude: latitude,
+        longitude: longitude,
+        locationAddress: locationAddress,
       );
 
       // Save to Firestore
@@ -78,6 +84,7 @@ class AbsenceService {
       print(
         'Absence saved successfully to Firestore with local image path: $localImagePath',
       );
+      print('Location: $locationAddress ($latitude, $longitude)');
       return docId;
     } catch (e) {
       print('Error saving absence: $e');
@@ -157,14 +164,15 @@ class AbsenceService {
   // Get attendance statistics - Optional method for future use
   Future<Map<String, int>> getAttendanceStats() async {
     final user = _auth.currentUser;
-    if (user == null) return {'present': 0, 'late': 0, 'very_late': 0};
+    if (user == null)
+      return {'hadir': 0, 'terlambat': 0, 'sangat_terlambat': 0};
 
     final snapshot = await _firestore
         .collection('absences')
         .where('userId', isEqualTo: user.uid)
         .get();
 
-    final stats = {'present': 0, 'late': 0, 'very_late': 0};
+    final stats = {'hadir': 0, 'terlambat': 0, 'sangat_terlambat': 0};
 
     for (var doc in snapshot.docs) {
       final status = doc.data()['status'] as String;
