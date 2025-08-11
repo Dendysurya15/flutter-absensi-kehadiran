@@ -1,5 +1,9 @@
 import 'package:get/get.dart';
 
+import '../modules/absence/bindings/absence_binding.dart';
+import '../modules/absence/views/absence_view.dart';
+import '../modules/history_absence/bindings/history_absence_binding.dart';
+import '../modules/history_absence/views/history_absence_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -17,11 +21,7 @@ class AppPages {
   static const INITIAL = Routes.HOME;
 
   static final routes = [
-    GetPage(
-      name: _Paths.HOME,
-      page: () => const HomeView(),
-      binding: HomeBinding(),
-    ),
+    GetPage(name: _Paths.HOME, page: () => HomeView(), binding: HomeBinding()),
     GetPage(
       name: _Paths.LOGIN,
       page: () => const LoginView(),
@@ -36,6 +36,21 @@ class AppPages {
       name: _Paths.RESET_PASSWORD,
       page: () => const ResetPasswordView(),
       binding: ResetPasswordBinding(),
+    ),
+    GetPage(
+      name: _Paths.ABSENCE,
+      page: () => const AbsenceView(),
+      binding: AbsenceBinding(),
+    ),
+    GetPage(
+      name: _Paths.HISTORY,
+      page: () => const HistoryView(),
+      binding: HistoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.HISTORY_ABSENCE,
+      page: () => HistoryView(),
+      binding: HistoryBinding(),
     ),
   ];
 }
