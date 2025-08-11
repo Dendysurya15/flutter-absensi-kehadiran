@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth_get_x/app/controllers/auth_controller.dart';
-import 'package:firebase_auth_get_x/app/modules/home/views/home_view.dart';
-import 'package:firebase_auth_get_x/app/modules/login/controllers/login_controller.dart';
-import 'package:firebase_auth_get_x/app/modules/login/views/login_view.dart';
-import 'package:firebase_auth_get_x/app/utils/loading.dart';
+import 'package:absensi_kehadiran/app/controllers/auth_controller.dart';
+import 'package:absensi_kehadiran/app/modules/home/views/home_view.dart';
+import 'package:absensi_kehadiran/app/modules/login/controllers/login_controller.dart';
+import 'package:absensi_kehadiran/app/modules/login/views/login_view.dart';
+import 'package:absensi_kehadiran/app/utils/loading.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 

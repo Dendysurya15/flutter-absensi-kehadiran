@@ -1,4 +1,4 @@
-package com.templateFirebaseAuthGetX.firebase_auth_get_x
+package com.no_company.absensi_kehadiran
 
 import io.flutter.embedding.android.FlutterActivity
 
