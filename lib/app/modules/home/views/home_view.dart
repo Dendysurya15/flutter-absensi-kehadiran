@@ -18,7 +18,7 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Attendance App'),
-        backgroundColor: Colors.blue[600],
+        backgroundColor: const Color(0xFF2E7D32), // Dark green
         foregroundColor: Colors.white,
         elevation: 0,
         bottom: TabBar(
@@ -27,6 +27,7 @@ class HomeView extends GetView<HomeController> {
           indicatorWeight: 3,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
+          labelStyle: const TextStyle(fontWeight: FontWeight.w600),
           tabs: const [
             Tab(icon: Icon(Icons.camera_alt), text: 'Mark Attendance'),
             Tab(icon: Icon(Icons.history), text: 'History'),
@@ -36,12 +37,27 @@ class HomeView extends GetView<HomeController> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () => controller.signOut(),
+            tooltip: 'Sign Out',
           ),
         ],
       ),
-      body: TabBarView(
-        controller: controller.tabController,
-        children: const [AbsenceView(), HistoryView()],
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF2E7D32), // Dark green
+              Color(0xFF4CAF50), // Medium green
+              Colors.white,
+            ],
+            stops: [0.0, 0.1, 0.3],
+          ),
+        ),
+        child: TabBarView(
+          controller: controller.tabController,
+          children: const [AbsenceView(), HistoryView()],
+        ),
       ),
     );
   }
