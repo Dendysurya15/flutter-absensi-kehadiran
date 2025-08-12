@@ -9,328 +9,581 @@ class AbsenceView extends GetView<AbsenceController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(
-        () => Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // User info card - Nama pengguna
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.person, color: Colors.blue[600]),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Nama Pengguna',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Obx(
-                        () => Text(
-                          controller.currentUser.value?.email ?? 'User',
-                          style: Theme.of(context).textTheme.titleMedium,
+        () => Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF0C487B).withOpacity(0.05), Colors.white],
+              stops: [0.0, 0.3],
+            ),
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Welcome Header
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xFF0C487B).withOpacity(0.08),
+                          blurRadius: 20,
+                          offset: const Offset(0, 4),
                         ),
-                      ),
-                      const Divider(height: 16),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_today,
-                            color: Colors.blue[600],
-                            size: 16,
-                          ),
-                          const SizedBox(width: 8),
-                          Obx(
-                            () => Text(
-                              'Tanggal: ${_formatDate(controller.currentTime.value)}',
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.access_time,
-                            color: Colors.blue[600],
-                            size: 16,
-                          ),
-                          const SizedBox(width: 8),
-                          Obx(
-                            () => Text(
-                              'Waktu: ${_formatTime(controller.currentTime.value)}',
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Location info card - Lokasi pengguna (updates every 5 seconds)
-              Obx(
-                () => Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                      ],
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.location_on, color: Colors.green[600]),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Lokasi Pengguna',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[700],
+                            Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Color(0xFF0C487B).withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              child: Icon(
+                                Icons.person_outline,
+                                color: Color(0xFF0C487B),
+                                size: 28,
                               ),
                             ),
-                            const Spacer(),
-                            if (controller.isLocationLoading.value)
-                              const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Selamat Datang',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey.shade600,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Obx(
+                                    () => Text(
+                                      controller.currentUser.value?.email ??
+                                          'User',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.grey.shade800,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          controller.currentLocation.value,
-                          style: TextStyle(
-                            color:
-                                controller.currentLocation.value.contains(
-                                      'Error',
-                                    ) ||
-                                    controller.currentLocation.value.contains(
-                                      'ditolak',
-                                    ) ||
-                                    controller.currentLocation.value.contains(
-                                      'tidak',
-                                    )
-                                ? Colors.red[600]
-                                : Colors.grey[700],
-                          ),
-                        ),
-                        if (controller.coordinates.value.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            'Koordinat: ${controller.coordinates.value}',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[500],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          // Location validation status
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: controller.isLocationValid.value
-                                  ? Colors.green[100]
-                                  : Colors.red[100],
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: controller.isLocationValid.value
-                                    ? Colors.green
-                                    : Colors.red,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  controller.isLocationValid.value
-                                      ? Icons.check_circle
-                                      : Icons.error,
-                                  size: 16,
-                                  color: controller.isLocationValid.value
-                                      ? Colors.green
-                                      : Colors.red,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  controller.isLocationValid.value
-                                      ? 'Dalam area kantor'
-                                      : 'Di luar area kantor (${controller.distanceFromOffice.value.toStringAsFixed(0)}m)',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: controller.isLocationValid.value
-                                        ? Colors.green[700]
-                                        : Colors.red[700],
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
+                        const SizedBox(height: 20),
+                        Container(
+                          height: 1,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.transparent,
+                                Colors.grey.shade200,
+                                Colors.transparent,
                               ],
                             ),
                           ),
-                        ],
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.calendar_today_outlined,
+                                    color: Color(0xFF0C487B),
+                                    size: 20,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Obx(
+                                    () => Text(
+                                      _formatDate(controller.currentTime.value),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              width: 1,
+                              height: 40,
+                              color: Colors.grey.shade200,
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.access_time_outlined,
+                                    color: Color(0xFF0C487B),
+                                    size: 20,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Obx(
+                                    () => Text(
+                                      _formatTime(controller.currentTime.value),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                ),
-              ),
 
-              const SizedBox(height: 16),
+                  const SizedBox(height: 24),
 
-              // Attendance status - Status absensi hari ini
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: controller.hasMarkedToday.value
-                      ? Colors.green[100]
-                      : Colors.orange[100],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: controller.hasMarkedToday.value
-                        ? Colors.green
-                        : Colors.orange,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      controller.hasMarkedToday.value
-                          ? Icons.check_circle
-                          : Icons.schedule,
-                      color: controller.hasMarkedToday.value
-                          ? Colors.green
-                          : Colors.orange,
-                      size: 30,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
+                  // Location Card
+                  Obx(
+                    () => Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade50,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  Icons.location_on_outlined,
+                                  color: Colors.green.shade600,
+                                  size: 20,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                'Lokasi Saat Ini',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.grey.shade800,
+                                ),
+                              ),
+                              const Spacer(),
+                              if (controller.isLocationLoading.value)
+                                SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Color(0xFF0C487B),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
                           Text(
-                            'Status Absensi Hari Ini',
+                            controller.currentLocation.value,
                             style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color:
+                                  controller.currentLocation.value.contains(
+                                        'Error',
+                                      ) ||
+                                      controller.currentLocation.value.contains(
+                                        'ditolak',
+                                      ) ||
+                                      controller.currentLocation.value.contains(
+                                        'tidak',
+                                      )
+                                  ? Colors.red.shade600
+                                  : Colors.grey.shade600,
+                              height: 1.4,
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
+                          if (controller.coordinates.value.isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            Text(
+                              'Koordinat: ${controller.coordinates.value}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade500,
+                                fontFamily: 'monospace',
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: controller.isLocationValid.value
+                                    ? Colors.green.shade50
+                                    : Colors.red.shade50,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: controller.isLocationValid.value
+                                      ? Colors.green.shade200
+                                      : Colors.red.shade200,
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    controller.isLocationValid.value
+                                        ? Icons.check_circle_outline
+                                        : Icons.error_outline,
+                                    size: 18,
+                                    color: controller.isLocationValid.value
+                                        ? Colors.green.shade600
+                                        : Colors.red.shade600,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      controller.isLocationValid.value
+                                          ? 'Dalam area kantor'
+                                          : 'Di luar area kantor (${controller.distanceFromOffice.value.toStringAsFixed(0)}m)',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: controller.isLocationValid.value
+                                            ? Colors.green.shade700
+                                            : Colors.red.shade700,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Attendance Status Card
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: controller.hasMarkedToday.value
+                            ? [Colors.green.shade50, Colors.green.shade100]
+                            : [Colors.orange.shade50, Colors.orange.shade100],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: controller.hasMarkedToday.value
+                            ? Colors.green.shade200
+                            : Colors.orange.shade200,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: controller.hasMarkedToday.value
+                                ? Colors.green.shade600
+                                : Colors.orange.shade600,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
                             controller.hasMarkedToday.value
-                                ? 'Sudah Absen'
-                                : 'Belum Absen',
+                                ? Icons.check_circle
+                                : Icons.schedule,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Status Absensi Hari Ini',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey.shade600,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                controller.hasMarkedToday.value
+                                    ? 'Sudah Absen'
+                                    : 'Belum Absen',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: controller.hasMarkedToday.value
+                                      ? Colors.green.shade700
+                                      : Colors.orange.shade700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // Mark Attendance Button
+                  Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow:
+                          (controller.isLoading.value ||
+                              !controller.isLocationValid.value ||
+                              controller.hasMarkedToday.value)
+                          ? null
+                          : [
+                              BoxShadow(
+                                color: Color(0xFF0C487B).withOpacity(0.3),
+                                blurRadius: 20,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed:
+                          (controller.isLoading.value ||
+                              !controller.isLocationValid.value ||
+                              controller.hasMarkedToday.value)
+                          ? null
+                          : () => controller.markAttendance(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            (controller.hasMarkedToday.value ||
+                                !controller.isLocationValid.value)
+                            ? Colors.grey.shade400
+                            : Color(0xFF0C487B),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (controller.isLoading.value)
+                            const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                          else
+                            Icon(
+                              controller.hasMarkedToday.value
+                                  ? Icons.check
+                                  : !controller.isLocationValid.value
+                                  ? Icons.location_off
+                                  : Icons.camera_alt,
+                              size: 24,
+                            ),
+                          const SizedBox(width: 12),
+                          Text(
+                            controller.isLoading.value
+                                ? 'Memproses...'
+                                : controller.hasMarkedToday.value
+                                ? 'Sudah Absen Hari Ini'
+                                : !controller.isLocationValid.value
+                                ? 'Di Luar Area Kantor'
+                                : 'Absen Sekarang (Ambil Foto Selfie)',
                             style: const TextStyle(
                               fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Mark attendance button - Tombol Absen Sekarang
-              ElevatedButton.icon(
-                onPressed:
-                    (controller.isLoading.value ||
-                        !controller.isLocationValid.value ||
-                        controller.hasMarkedToday.value)
-                    ? null
-                    : () => controller.markAttendance(),
-                icon: controller.isLoading.value
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Icon(
-                        controller.hasMarkedToday.value
-                            ? Icons.check
-                            : !controller.isLocationValid.value
-                            ? Icons.location_off
-                            : Icons.camera_alt,
-                      ),
-                label: Text(
-                  controller.isLoading.value
-                      ? 'Memproses...'
-                      : controller.hasMarkedToday.value
-                      ? 'Sudah Absen Hari Ini'
-                      : !controller.isLocationValid.value
-                      ? 'Di Luar Area Kantor'
-                      : 'Absen Sekarang (Ambil Foto Selfie)',
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      (controller.hasMarkedToday.value ||
-                          !controller.isLocationValid.value)
-                      ? Colors.grey
-                      : Colors.blue[600],
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
                   ),
-                ),
-              ),
 
-              const Spacer(),
+                  const SizedBox(height: 32),
 
-              // Info card - Aturan absensi
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        size: 40,
-                        color: Colors.blue[600],
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Aturan Absensi',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                  // Rules Card
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF0C487B).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.info_outline,
+                            size: 28,
+                            color: Color(0xFF0C487B),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        '• Sebelum 08:00 - Hadir\n• 08:01 - 09:00 - Terlambat\n• Setelah 09:00 - Sangat Terlambat\n• Lokasi harus dalam radius 100m dari kantor\n• Koordinat kantor: -2.622724, 111.674346\n• Wajib ambil foto selfie',
-                        style: TextStyle(fontSize: 13),
-                        textAlign: TextAlign.left,
-                      ),
-                    ],
+                        const SizedBox(height: 16),
+                        Text(
+                          'Aturan Absensi',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.grey.shade800,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            children: [
+                              _buildRuleItem(
+                                'Sebelum 08:00',
+                                'Hadir',
+                                Colors.green,
+                              ),
+                              _buildRuleItem(
+                                '08:01 - 09:00',
+                                'Terlambat',
+                                Colors.orange,
+                              ),
+                              _buildRuleItem(
+                                'Setelah 09:00',
+                                'Sangat Terlambat',
+                                Colors.red,
+                              ),
+                              const SizedBox(height: 12),
+                              Container(height: 1, color: Colors.grey.shade300),
+                              const SizedBox(height: 12),
+                              _buildInfoItem(
+                                Icons.location_on,
+                                'Radius 100m dari kantor',
+                              ),
+                              _buildInfoItem(
+                                Icons.gps_fixed,
+                                'Koordinat: -2.622724, 111.674346',
+                              ),
+                              _buildInfoItem(
+                                Icons.camera_alt,
+                                'Wajib ambil foto selfie',
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+
+                  const SizedBox(height: 24),
+                ],
               ),
-            ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildRuleItem(String time, String status, Color color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            '$time - ',
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            status,
+            style: TextStyle(
+              fontSize: 13,
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoItem(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          Icon(icon, size: 14, color: Colors.grey.shade500),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+            ),
+          ),
+        ],
       ),
     );
   }
